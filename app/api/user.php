@@ -168,13 +168,17 @@ $app->get('/api/user/{UserId}', function($request){
 	
 	$query = "Select FirstName, MiddleName, LastName, BirthDate, EmailAddress, UserName, MobileNo1, MobileNo2, TelNo, Province, Municipality, Barangay, StreetNo from users where UserId = '$UserId' LIMIT 1";
 	$result = $mysqli->query($query);
+	$row = $result->fetch_assoc();
+	$num_rows = mysqli_num_rows($result);
 
-	while ($row = $result->fetch_assoc()) {
+	if ($num_rows !== 0) {
 		$data[] = $row;
-	}	
-
-	header('Content-Type: application/json');
-	echo json_encode($data);
+		header('Content-Type: application/json');
+		echo json_encode($data);
+	}
+	else {
+		echo "Error: Invalid user.";
+	}
 });
 
 $app->post('/api/login', function($request){

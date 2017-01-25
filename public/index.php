@@ -30,6 +30,11 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     "callback" => function ($request, $response, $arguments) use ($container) {
         $container["jwt"] = $arguments["decoded"];
     },
+    "rules" => [
+        new \Slim\Middleware\JwtAuthentication\RequestMethodRule([
+            "passthrough" => ["OPTIONS", "GET"]
+        ])
+    ],
     "error" => function ($request, $response, $arguments) {
         $data["status"] = "error";
         $data["message"] = $arguments["message"];
@@ -46,9 +51,7 @@ $container['logger'] = function($c) {
     return $logger;
 };
 
-require_once('../app/api/books.php');
 require_once('../app/api/ads.php');
-require_once('../app/api/generate.php');
 require_once('../app/api/user.php');
 require_once('../app/api/search.php');
 require_once('../app/api/upload.php');
