@@ -23,13 +23,17 @@ $app->get('/api/ads/{UserId}', function($request) {
 	
 	$query = "Select * from ads where UserId = '$UserId'";
 	$result = $mysqli->query($query);
+	$row = $result->fetch_assoc();
+	$num_rows = mysqli_num_rows($result);
 
-	while ($row = $result->fetch_assoc()) {
+	if ($num_rows !== 0) {
 		$data[] = $row;
-	}	
-
-	header('Content-Type: application/json');
-	echo json_encode($data);
+		header('Content-Type: application/json');
+		echo json_encode($data);
+	}
+	else {
+		echo "Error: No ads.";
+	}
 
 });
 

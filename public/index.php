@@ -55,5 +55,6 @@ require_once('../app/api/ads.php');
 require_once('../app/api/user.php');
 require_once('../app/api/search.php');
 require_once('../app/api/upload.php');
+require_once('../app/api/booking.php');
 
 $app->run();

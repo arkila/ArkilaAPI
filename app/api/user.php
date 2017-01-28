@@ -56,14 +56,14 @@ $app->post('/api/user', function($request) {
 	if (strlen($MobileNo2) != 11) { $errorMsg .= " Alternative Mobile Number must be 11 digits."; }
 
 	if (preg_match('/^[A-Za-z0-9_ -]+$/', $FirstName) == false) { $errorMsg .= " FirstName is invalid."; }
-	if (preg_match('/^[A-Za-z0-9_ -]+$/', $MiddleName) == false) { $errorMsg .= " MiddleName is invalid."; }
+	if (preg_match('/^$|^[A-Za-z0-9_ -]+$/', $MiddleName) == false) { $errorMsg .= " MiddleName is invalid."; }
 	if (preg_match('/^[A-Za-z0-9_ -]+$/', $LastName) == false) { $errorMsg .= " LastName is invalid."; }
 	if (DateTime::createFromFormat("Y-m-d", $BirthDate) == false) {	$errorMsg .= " BirthDate is invalid (Correct format is Y-m-d)."; }
 	if (preg_match('/^[MmFf]+$/', $Gender) == false) { $errorMsg .= " Gender must be M or F only.";	}
 	if (!filter_var($EmailAddress, FILTER_VALIDATE_EMAIL)) { $errorMsg .= " Invalid EmailAddress.";	}
 	if (preg_match('/^[0-9-]+$/', $MobileNo1) == false) { $errorMsg .= " Mobile Number is invalid."; }
 	if (preg_match('/^[0-9-]+$/', $MobileNo2) == false) { $errorMsg .= " Alternative Mobile Number is invalid."; }
-	if (preg_match('/^[0-9-]+$/', $TelNo) == false) { $errorMsg .= " TelNo is invalid."; }
+	if (preg_match('/^$|^[A-Za-z0-9_ -]+$/', $TelNo) == false) { $errorMsg .= " TelNo is invalid."; }
 	if (preg_match('/^[A-Za-z0-9_ -]+$/', $Province) == false) { $errorMsg .= " Province is invalid."; }
 	if (preg_match('/^[A-Za-z0-9_ -]+$/', $Municipality) == false) { $errorMsg .= " Municipality is invalid."; }
 	if (preg_match('/^[A-Za-z0-9_ -]+$/', $Barangay) == false) { $errorMsg .= " Barangay is invalid."; }
@@ -199,6 +199,8 @@ $app->post('/api/login', function($request){
 
 		$isCorrect = $passwordIsCorrect = password_verify($Password, $rowPassword[0]);
 
+
+
 		if ($isCorrect == 1) {
 
 			$tokenId    = base64_encode(mcrypt_create_iv(32));
@@ -209,7 +211,7 @@ $app->post('/api/login', function($request){
 
 			$secretKey = getenv('JWT_SECRET');
 
-			 $data = [
+			$data = [
 		        'iat'  => $issuedAt,         // Issued at: time when the token was generated
 		        'jti'  => $tokenId,          // Json Token Id: an unique identifier for the token
 		        'iss'  => $serverName,       // Issuer
@@ -227,14 +229,22 @@ $app->post('/api/login', function($request){
 			        'HS256'     // Algorithm used to sign the token, see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3
 	        );
         	//echo $secretKey;
+        	$decoded = JWT::decode($jwt, $secretKey, array('HS256'));
+        	$array = json_decode(json_encode($decoded), true);
+
+        	//var_dump($array);
+        	//echo $array["data"]["userName"];
+
 		    $unencodedArray = ['jwt' => $jwt];
 		    echo $jwt;
 		}
 		else{
+			echo $UserName;
 			echo "Invalid Username/Password";
 		}
 	}
 	else{
+		echo $UserName;
 		echo "Invalid Username/Password.";
 	}
 });
