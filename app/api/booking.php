@@ -1,8 +1,6 @@
 <?php
 
 $app->post('/api/booking', function($request) {
-	$this->logger->addInfo("Add Booking");
-
 	require_once('dbconnect.php');
 
 	$query = "INSERT INTO `bookings` (`BookingId`, `UserId`, `AdsId`, `CreatedFrom`) VALUES (?, ?, ?, ?)";
@@ -33,6 +31,8 @@ $app->post('/api/booking', function($request) {
 	else{
 		echo $errorMsg;
 	}
+
+	$this->logger->addInfo("Add Booking");
 });
 
 $app->get('/api/booking/{UserId}', function($request) {
@@ -46,16 +46,16 @@ $app->get('/api/booking/{UserId}', function($request) {
 				INNER JOIN `users` ON ads.UserId = users.UserId
 				WHERE bookings.UserId = $UserId";
 	$result = $mysqli->query($query);
-	$row = $result->fetch_assoc();
-	$num_rows = mysqli_num_rows($result);
 
-	if ($num_rows !== 0) {
-		$data[] = $row;
-		header('Content-Type: application/json');
-		echo json_encode($data);
+	if (mysqli_num_rows($result) === 0) {
+		echo "Error: No bookings.";
 	}
 	else {
-		echo "Error: No bookings.";
+		while ($row = $result->fetch_assoc()) {
+			$data[] = $row;
+			header('Content-Type: application/json');
+			echo json_encode($data);
+		}
 	}
 });
 

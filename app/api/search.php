@@ -17,12 +17,14 @@ $app->post('/api/search', function($request) {
 
 	$result = $mysqli->query($query);
 
-	while ($row = $result->fetch_assoc()) {
-		$data[] = $row;
-	}	
-
-	if (isset($data)) {
-		header('Content-Type: application/json');
-		echo json_encode($data);
+	if (mysqli_num_rows($result) === 0) {
+		echo "Error: No match found.";
+	}
+	else {
+		while ($row = $result->fetch_assoc()) {
+			$data[] = $row;
+			header('Content-Type: application/json');
+			echo json_encode($data);
+		}
 	}
 });

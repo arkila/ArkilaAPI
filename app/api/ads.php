@@ -7,13 +7,15 @@ $app->get('/api/ads', function() {
 	$query = "select * from ads order by DateCreated";
 	$result = $mysqli->query($query);
 
-	while ($row = $result->fetch_assoc()) {
-		$data[] = $row;
-	}	
-
-	if (isset($data)) {
-		header('Content-Type: application/json');
-		echo json_encode($data);
+	if (mysqli_num_rows($result) === 0) {
+		echo "Error: No ads.";
+	}
+	else {
+		while ($row = $result->fetch_assoc()) {
+			$data[] = $row;
+			header('Content-Type: application/json');
+			echo json_encode($data);
+		}
 	}
 });
 $app->get('/api/ads/{UserId}', function($request) {
@@ -23,18 +25,17 @@ $app->get('/api/ads/{UserId}', function($request) {
 	
 	$query = "Select * from ads where UserId = '$UserId'";
 	$result = $mysqli->query($query);
-	$row = $result->fetch_assoc();
-	$num_rows = mysqli_num_rows($result);
 
-	if ($num_rows !== 0) {
-		$data[] = $row;
-		header('Content-Type: application/json');
-		echo json_encode($data);
-	}
-	else {
+	if (mysqli_num_rows($result) === 0) {
 		echo "Error: No ads.";
 	}
-
+	else {
+		while ($row = $result->fetch_assoc()) {
+			$data[] = $row;
+			header('Content-Type: application/json');
+			echo json_encode($data);
+		}
+	}
 });
 
 $app->post('/api/ads', function($request) {
