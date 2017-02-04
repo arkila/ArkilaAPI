@@ -11,11 +11,9 @@ $app->get('/api/ads', function() {
 		echo "Error: No ads.";
 	}
 	else {
-		while ($row = $result->fetch_assoc()) {
-			$data[] = $row;
-			header('Content-Type: application/json');
-			echo json_encode($data);
-		}
+		$data = $result->fetch_all(MYSQLI_ASSOC);
+		header('Content-Type: application/json');
+		echo json_encode($data);
 	}
 });
 $app->get('/api/ads/{UserId}', function($request) {
@@ -30,11 +28,9 @@ $app->get('/api/ads/{UserId}', function($request) {
 		echo "Error: No ads.";
 	}
 	else {
-		while ($row = $result->fetch_assoc()) {
-			$data[] = $row;
-			header('Content-Type: application/json');
-			echo json_encode($data);
-		}
+		$data = $result->fetch_all(MYSQLI_ASSOC);
+		header('Content-Type: application/json');
+		echo json_encode($data);
 	}
 });
 

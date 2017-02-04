@@ -21,10 +21,8 @@ $app->post('/api/search', function($request) {
 		echo "Error: No match found.";
 	}
 	else {
-		while ($row = $result->fetch_assoc()) {
-			$data[] = $row;
-			header('Content-Type: application/json');
-			echo json_encode($data);
-		}
+		$data = $result->fetch_all(MYSQLI_ASSOC);
+		header('Content-Type: application/json');
+		echo json_encode($data);
 	}
 });
