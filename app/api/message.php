@@ -15,16 +15,36 @@ $app->get('/api/message/all/{UserId}', function($request) {
 		echo "Error: No message.";
 	}
 	else {
-		while ($row = $result->fetch_assoc()) {
-			$data[] = $row;
-			header('Content-Type: application/json');
-			echo json_encode($data);
-		}
+		$data = $result->fetch_all(MYSQLI_ASSOC);
+		header('Content-Type: application/json');
+		echo json_encode($data);
 	}
 });
 
-$app->get('/api/message/t/{UserId}', function($request) {
+$app->post('/api/message/t/{UserId}', function($request) {
+	require_once('dbconnect.php');
 
+	$sentTo = $request->getAttribute('UserId');
+	$sentFrom = $request->getParsedBody()['CurrentUser'];
+
+	$querycidfk = "SELECT c_id FROM conversation WHERE user_one = '$sentFrom' AND user_two = '$sentTo' LIMIT 1";
+	$querycidfkResult = $mysqli->query($querycidfk);
+	$rowcidfk = $querycidfkResult->fetch_row();
+
+	$c_id_fk = $rowcidfk[0];
+
+	$queryConversation = "SELECT R.cr_id, R.time, R.reply, U.UserId, U.UserName, U.EmailAddress FROM users U, conversation_reply R WHERE R.user_id_fk = U.UserId AND R.c_id_fk = '$c_id_fk' ORDER BY R.cr_id DESC";
+
+	$result = $mysqli->query($queryConversation);
+
+	if (mysqli_num_rows($result) === 0) {
+		echo "Error: No message.";
+	}
+	else {
+		$data = $result->fetch_all(MYSQLI_ASSOC);
+		header('Content-Type: application/json');
+		echo json_encode($data);
+	}
 });
 
 $app->post('/api/message', function($request) {
