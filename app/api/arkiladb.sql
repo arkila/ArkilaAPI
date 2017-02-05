@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.6
+-- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Feb 04, 2017 at 09:53 AM
--- Server version: 10.1.20-MariaDB
--- PHP Version: 7.0.8
+-- Host: 127.0.0.1
+-- Generation Time: Feb 05, 2017 at 01:44 AM
+-- Server version: 10.1.21-MariaDB
+-- PHP Version: 7.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `id599972_arkiladb`
+-- Database: `arkiladb`
 --
 
 -- --------------------------------------------------------
@@ -39,13 +39,6 @@ CREATE TABLE IF NOT EXISTS `ads` (
   UNIQUE KEY `AdsId` (`AdsId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Dumping data for table `ads`
---
-
-INSERT INTO `ads` (`AdsId`, `UserId`, `Title`, `Capacity`, `CarType`, `OtherDetails`, `IsActive`, `DateCreated`) VALUES
-('17012812390851594628', '17012811382291635759', 'Van', 11, 'Test', 'test', b'1', '2017-01-28 19:39:08.514818');
-
 -- --------------------------------------------------------
 
 --
@@ -63,14 +56,6 @@ CREATE TABLE IF NOT EXISTS `adsimage` (
   PRIMARY KEY (`RecId`),
   UNIQUE KEY `RecId` (`RecId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `adsimage`
---
-
-INSERT INTO `adsimage` (`RecId`, `AdsId`, `Path`, `CreatedBy`, `CreatedFrom`, `DateCreated`, `IsActive`) VALUES
-(1, 'test', 'test', '1test', '1test', '2017-01-25 22:20:53.989', b'1'),
-(2, 'test', 'test', '1test', '1test', '2017-01-27 21:18:44.583', b'1');
 
 -- --------------------------------------------------------
 
@@ -95,19 +80,6 @@ CREATE TABLE IF NOT EXISTS `bookings` (
   UNIQUE KEY `BookingId` (`BookingId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Dumping data for table `bookings`
---
-
-INSERT INTO `bookings` (`BookingId`, `UserId`, `AdsId`, `Status`, `CreatedFrom`, `DateCreated`, `IsReadOwner`, `IsReadOwnerDate`, `IsReadUser`, `IsReadUserDate`, `IsActive`, `Remarks`) VALUES
-('1', '1', '1', 'PENDING', '1', '0000-00-00 00:00:00.000000', b'0', '0000-00-00 00:00:00.000000', b'0', '0000-00-00 00:00:00.000000', b'1', ''),
-('17012705081357095226', 'test', 'test', 'PENDING', 'test', '2017-01-28 00:08:13.571454', b'0', '2017-01-28 00:08:13.571454', b'0', '2017-01-28 00:08:13.571454', b'1', ''),
-('17012705091958673484', 'test', 'test', 'APPROVED', 'test', '2017-01-28 00:09:19.586229', b'0', NULL, b'0', NULL, b'1', 'Updated'),
-('17012801030454826203', '17012801024370481400', '17012812390851594628', 'PENDING', 'testapp', '2017-01-28 20:03:04.548449', b'0', NULL, b'1', NULL, b'1', ''),
-('17012809011072426062', 'testId', 'testads', 'PENDING', 'testapp', '2017-01-28 16:01:10.723812', b'0', NULL, b'1', NULL, b'1', ''),
-('17012812362118134128', 'testId', 'testads', 'PENDING', 'testapp', '2017-01-28 19:36:21.182248', b'0', NULL, b'1', NULL, b'1', ''),
-('17012812374308655856', '17012811382291635759', 'testads', 'PENDING', 'testapp', '2017-01-28 19:37:43.085932', b'0', NULL, b'1', NULL, b'1', '');
-
 -- --------------------------------------------------------
 
 --
@@ -123,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `conversation` (
   PRIMARY KEY (`c_id`),
   KEY `user_one` (`user_one`),
   KEY `user_two` (`user_two`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -141,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `conversation_reply` (
   PRIMARY KEY (`cr_id`),
   KEY `user_id_fk` (`user_id_fk`),
   KEY `c_id_fk` (`c_id_fk`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -177,15 +149,6 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`UserId`, `FirstName`, `MiddleName`, `LastName`, `BirthDate`, `Gender`, `EmailAddress`, `UserName`, `Password`, `SaltPassword`, `MobileNo1`, `MobileNo2`, `TelNo`, `ProfilePicturePath`, `Province`, `Municipality`, `Barangay`, `StreetNo`, `Token`, `CreatedAt`, `UpdatedAt`, `dropbox_token`) VALUES
-('17012801023111629389', 'MARRY ANN', '', 'Alcantara', '1996-09-21', 'm', 'decenamaan1@yahoo.com.ph', 'kontrasenyas1111', '$2y$10$SWCuRwYFm7KzvkXpT61sxuoKV5hXln69ldnYaXlUG8lnIZLTFGgZC', '', '09269772081', '09269772081', '', '', 'Cavite', 'Tanza', 'Paradahan', 'Blk 14', '', 'Mobile', '2017-01-28 20:02:31.183', ''),
-('17012801024370481400', 'MARRY ANN', '', 'Alcantara', '1996-09-21', 'm', 'decenamaan12@yahoo.com.ph', 'kontrasenyas2', '$2y$10$XMDKdZrHFz3CfPJcxIZPIucQXYFm./UHKToUFrts0N6Y3WBhHoEK2', '', '09269772081', '09269772081', '', '', 'Cavite', 'Tanza', 'Paradahan', 'Blk 14', '', 'Mobile', '2017-01-28 20:02:43.770', ''),
-('17012811382291635759', 'MARRY ANN_111111', '', 'Alcantara', '1996-09-21', 'm', 'decenamaan1211111@yahoo.com.ph', 'kontrasenyas', '$2y$10$kM/3Kcc19AjnE7Xx.moTEuiRr0SMHsCYxHX9gPZ8P9fN/PCLtDre.', '', '09269772081', '09269772081', '', '', 'Cavite', 'Tanza', 'Paradahan', 'Blk 14', '', 'Mobile', '2017-01-28 18:38:22.982', '');
-
---
 -- Constraints for dumped tables
 --
 
@@ -195,13 +158,6 @@ INSERT INTO `users` (`UserId`, `FirstName`, `MiddleName`, `LastName`, `BirthDate
 ALTER TABLE `conversation`
   ADD CONSTRAINT `conversation_ibfk_1` FOREIGN KEY (`user_one`) REFERENCES `users` (`UserId`),
   ADD CONSTRAINT `conversation_ibfk_2` FOREIGN KEY (`user_two`) REFERENCES `users` (`UserId`);
-
---
--- Constraints for table `conversation_reply`
---
-ALTER TABLE `conversation_reply`
-  ADD CONSTRAINT `conversation_reply_ibfk_1` FOREIGN KEY (`user_id_fk`) REFERENCES `users` (`UserId`),
-  ADD CONSTRAINT `conversation_reply_ibfk_2` FOREIGN KEY (`c_id_fk`) REFERENCES `conversation` (`c_id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
