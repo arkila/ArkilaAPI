@@ -5,9 +5,13 @@ $app->get('/api/message/all/{UserId}', function($request) {
 
 	$UserId = $request->getAttribute('UserId');
 
-	$query = "SELECT DISTINCT C.user_two, U2.FirstName, U2.LastName FROM `conversation` C 
+	$query = "SELECT DISTINCT C.user_two, U2.FirstName, U2.LastName, R.reply FROM `conversation` C 
 				INNER JOIN `users` U1 ON C.user_one = U1.UserId
 				INNER JOIN `users` U2 ON C.user_two = U2.UserId
+				INNER JOIN                 
+                	(
+                		SELECT Reply FROM `conversation_reply` WHERE user_id_fk = '$UserId' GROUP BY reply order by cr_id desc LIMIT 1
+                     ) R
 				WHERE U1.UserId = '$UserId'";
 	$result = $mysqli->query($query);
 
