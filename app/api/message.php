@@ -14,7 +14,7 @@ $app->get('/api/message/all/{UserId}', function($request) {
  //                     ) R
 	// 			WHERE U1.UserId = '$UserId'";
 
-	$query = "SELECT u.UserId,c.c_id,u.username FROM conversation c, users u 
+	$query = "SELECT u.UserId, c.c_id, u.FirstName, u.LastName FROM conversation c, users u 
 				WHERE (CASE WHEN c.user_one = '$UserId' THEN c.user_two = u.UserId WHEN c.user_two = '$UserId' THEN c.user_one= u.UserId END ) 
 				AND ( c.user_one ='$UserId' OR c.user_two ='$UserId' ) Order by c.c_id DESC Limit 20";
 	$result = $mysqli->query($query);
@@ -30,7 +30,8 @@ $app->get('/api/message/all/{UserId}', function($request) {
 		{
 			$c_id=$row['c_id'];
 			$user_id=$row['UserId'];
-			$username=$row['username'];
+			$FirstName = $row['FirstName'];
+			$LastName = $row['LastName'];
 
 			$cquery= "SELECT R.cr_id,R.time,R.reply FROM conversation_reply R WHERE R.c_id_fk='$c_id' ORDER BY R.cr_id DESC LIMIT 1";
 			$result2 = $mysqli->query($cquery);
@@ -39,8 +40,10 @@ $app->get('/api/message/all/{UserId}', function($request) {
 			$reply=$crow['reply'];
 			$time=$crow['time'];
 
-			$data[] = $crow;
+			$data[] = $row + $crow;
 		}
+		$this->logger->addInfo($UserId . " view all Message", $data );
+
 		echo json_encode(array("response" => $data));
 	}
 });
@@ -69,6 +72,7 @@ $app->post('/api/message/t/{UserId}', function($request) {
 		header('Content-Type: application/json');
 		echo json_encode($data);
 	}
+	$this->logger->addInfo($sentFrom . " view Message of " . $sentTo);
 });
 
 $app->post('/api/message', function($request) {
