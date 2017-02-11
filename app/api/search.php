@@ -1,7 +1,6 @@
 <?php
 
 $app->post('/api/search', function($request) {
-	$this->logger->addInfo("Search");
 	require_once('dbconnect.php');
 
 	$searchQueryTitle = $request->getParsedBody()['searchQueryTitle'];
@@ -25,4 +24,5 @@ $app->post('/api/search', function($request) {
 		header('Content-Type: application/json');
 		echo json_encode($data);
 	}
+	$this->logger->addInfo($searchQueryTitle . " " . $searchQueryTitle);
 });
