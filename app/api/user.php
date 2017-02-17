@@ -166,7 +166,7 @@ $app->get('/api/user/{UserId}', function($request){
 	require_once('dbconnect.php');
 	$UserId = $request->getAttribute('UserId');
 	
-	$query = "Select FirstName, MiddleName, LastName, BirthDate, EmailAddress, UserName, MobileNo1, MobileNo2, TelNo, Province, Municipality, Barangay, StreetNo from users where UserId = '$UserId' LIMIT 1";
+	$query = "Select UserId, FirstName, MiddleName, LastName, BirthDate, EmailAddress, UserName, MobileNo1, MobileNo2, TelNo, Province, Municipality, Barangay, StreetNo from users where UserId = '$UserId' LIMIT 1";
 	$result = $mysqli->query($query);
 	$row = $result->fetch_assoc();
 	$num_rows = mysqli_num_rows($result);
