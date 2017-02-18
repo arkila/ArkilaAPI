@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/api/notification/{UserId}', function($request) {
+$app->get('/api/notification/{UserId}', function($request, $response) {
 	require_once('dbconnect.php');
 
 	$UserId = $request->getAttribute('UserId');
@@ -21,8 +21,9 @@ $app->get('/api/notification/{UserId}', function($request) {
 
 			$result = $mysqli->query($queryOwner);
 			$data = $result->fetch_all(MYSQLI_ASSOC);
-			header('Content-Type: application/json');
-	 		echo json_encode($data);
+			return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode(['response' => $data]));
 		}
 	}
 	else {
@@ -32,8 +33,9 @@ $app->get('/api/notification/{UserId}', function($request) {
 
 		$result = $mysqli->query($queryUser);
 		$data = $result->fetch_all(MYSQLI_ASSOC);
-	 	header('Content-Type: application/json');
-	 	echo json_encode($data);
+	 	return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $data]));
 	}
 	// else {
 	// 	$data = $result->fetch_all(MYSQLI_ASSOC);
@@ -44,7 +46,7 @@ $app->get('/api/notification/{UserId}', function($request) {
 	// }	
 });
 
-$app->post('/api/notification/{BookingId}', function($request) {
+$app->post('/api/notification/{BookingId}', function($request, $response) {
 	require_once('dbconnect.php');
 
 	$UserId = $request->getParsedBody()['UserId'];
@@ -64,9 +66,10 @@ $app->post('/api/notification/{BookingId}', function($request) {
 			$stmt = $mysqli->prepare($query);
 			$stmt->execute();
 
-			// printf("rows affected: %d\n", $stmt->affected_rows);
-			header('Content-Type: application/json');
-	 		echo json_encode($stmt->affected_rows);
+			// printf("rows affected: %d\n", $stmt->affected_rows);		
+	 		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode(['response' => $stmt->affected_rows]));
 		}
 	}
 	else {
@@ -75,7 +78,8 @@ $app->post('/api/notification/{BookingId}', function($request) {
 			$stmt->execute();
 
 			//printf("rows affected: %d\n", $stmt->affected_rows);
-			header('Content-Type: application/json');
-	 		echo json_encode($stmt->affected_rows);
+	 		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode(['response' => $stmt->affected_rows]));	 		
 	}
 });

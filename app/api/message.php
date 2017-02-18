@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/api/message/all/{UserId}', function($request) {
+$app->get('/api/message/all/{UserId}', function($request, $response) {
 	require_once('dbconnect.php');
 
 	$UserId = $request->getAttribute('UserId');
@@ -20,7 +20,9 @@ $app->get('/api/message/all/{UserId}', function($request) {
 	$result = $mysqli->query($query);
 
 	if (mysqli_num_rows($result) === 0) {
-		echo "Error: No message.";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'Error: No message.']));
 	}
 	else {
 		//$data = $result->fetch_all(MYSQLI_ASSOC);
@@ -44,11 +46,13 @@ $app->get('/api/message/all/{UserId}', function($request) {
 		}
 		$this->logger->addInfo($UserId . " view all Message", $data );
 
-		echo json_encode(array("response" => $data));
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $data]));
 	}
 });
 
-$app->post('/api/message/t/{UserId}', function($request) {
+$app->post('/api/message/t/{UserId}', function($request, $response) {
 	require_once('dbconnect.php');
 
 	$sentTo = $request->getAttribute('UserId');
@@ -69,13 +73,14 @@ $app->post('/api/message/t/{UserId}', function($request) {
 	}
 	else {
 		$data = $result->fetch_all(MYSQLI_ASSOC);
-		header('Content-Type: application/json');
-		echo json_encode($data);
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $data]));
 	}
 	$this->logger->addInfo($sentFrom . " view Message of " . $sentTo);
 });
 
-$app->post('/api/message', function($request) {
+$app->post('/api/message', function($request, $response) {
 	require_once('dbconnect.php');
 
 	$sentTo = $request->getParsedBody()['SentTo'];
@@ -115,11 +120,13 @@ $app->post('/api/message', function($request) {
 		$stmt2->bind_param("ssss", $msg, $sentFrom, $ip, $c_id_fk);
 
 		$stmt2->execute();
-		echo "Success";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'success']));
 	}
 	else {
-		echo $errorMsg;
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $errorMsg]));
 	}
-
-
 });

@@ -1,6 +1,6 @@
 <?php
 
-$app->post('/api/search', function($request) {
+$app->post('/api/search', function($request, $response) {
 	require_once('dbconnect.php');
 
 	$searchQueryTitle = $request->getParsedBody()['searchQueryTitle'];
@@ -21,8 +21,9 @@ $app->post('/api/search', function($request) {
 	}
 	else {
 		$data = $result->fetch_all(MYSQLI_ASSOC);
-		header('Content-Type: application/json');
-		echo json_encode($data);
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $data]));
 	}
 	$this->logger->addInfo($searchQueryTitle . " " . $searchQueryTitle);
 });

@@ -1,6 +1,6 @@
 <?php
 
-$app->post('/api/upload', function($request) {
+$app->post('/api/upload', function($request, $response) {
 
 	$this->logger->addInfo("Upload");
 	require_once('dbconnect.php');
@@ -37,11 +37,15 @@ $app->post('/api/upload', function($request) {
 
 	if ($errorMsg == "Error:") {
 		$stmt->execute();
-		echo "Success";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'success']));
 	}
 
 	else{
-		echo $errorMsg;
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $errorMsg]));
 	}
 
 });

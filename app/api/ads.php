@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/api/ads', function() {
+$app->get('/api/ads', function($request, $response) {
 	$this->logger->addInfo("Get Function for ads");
 	require_once('dbconnect.php');
 
@@ -12,11 +12,12 @@ $app->get('/api/ads', function() {
 	}
 	else {
 		$data = $result->fetch_all(MYSQLI_ASSOC);
-		header('Content-Type: application/json');
-		echo json_encode($data);
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $data]));
 	}
 });
-$app->get('/api/ads/{UserId}', function($request) {
+$app->get('/api/ads/{UserId}', function($request, $response) {
 	$this->logger->addInfo("Get Function for ads of specific user");
 	require_once('dbconnect.php');
 	$UserId = $request->getAttribute('UserId');
@@ -25,16 +26,19 @@ $app->get('/api/ads/{UserId}', function($request) {
 	$result = $mysqli->query($query);
 
 	if (mysqli_num_rows($result) === 0) {
-		echo "Error: No ads.";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'Error: No ads.']));
 	}
 	else {
 		$data = $result->fetch_all(MYSQLI_ASSOC);
-		header('Content-Type: application/json');
-		echo json_encode($data);
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $data]));
 	}
 });
 
-$app->post('/api/ads', function($request) {
+$app->post('/api/ads', function($request, $response) {
 	$this->logger->addInfo("Post Function for ads");
 	require_once('dbconnect.php');
 	$this->logger->addInfo("Something interesting happened");
@@ -72,15 +76,19 @@ $app->post('/api/ads', function($request) {
 
 	if ($errorMsg == "Error:") {
 		$stmt->execute();
-		echo "Success";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'success']));
 	}
 	else{
-		echo $errorMsg;
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $errorMsg]));
 	}
 
 });
 
-$app->post('/api/ads/{AdsId}', function($request) {
+$app->post('/api/ads/{AdsId}', function($request, $response) {
 	$this->logger->addInfo("Update Function for ads");
 	require_once('dbconnect.php');
 
@@ -111,16 +119,20 @@ $app->post('/api/ads/{AdsId}', function($request) {
 	if (preg_match('/^[0-9-]+$/', $Capacity) == false) { $errorMsg .= " Capacity is invalid."; }
 
 	if ($errorMsg == "Error:") {
-		$stmt->execute();
-		echo "Success";
+		$stmt->execute();		
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'success']));
 	}
 	else{
-		echo $errorMsg;
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $errorMsg]));
 	}
 
 });
 
-$app->post('/api/ads/delete/', function($request) {
+$app->post('/api/ads/delete/', function($request, $response) {
 	$this->logger->addInfo("Delete Function for ads");
 	require_once('dbconnect.php');
 
@@ -133,6 +145,8 @@ $app->post('/api/ads/delete/', function($request) {
 	$errorMsg = "Error:";
 
 	$stmt->execute();
-	echo "Success";
+	return $response->withStatus(200)
+    ->withHeader('Content-Type', 'application/json')
+    ->write(json_encode(['response' => 'success']));
 
 });

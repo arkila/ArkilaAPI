@@ -1,6 +1,6 @@
 <?php
 
-$app->post('/api/booking', function($request) {
+$app->post('/api/booking', function($request, $response) {
 	require_once('dbconnect.php');
 
 	$query = "INSERT INTO `bookings` (`BookingId`, `UserId`, `AdsId`, `CreatedFrom`) VALUES (?, ?, ?, ?)";
@@ -26,16 +26,20 @@ $app->post('/api/booking', function($request) {
 
 	if ($errorMsg == "Error:") {
 		$stmt->execute();
-		echo "Success";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'success']));
 	}
-	else{
-		echo $errorMsg;
+	else{		
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $errorMsg]));
 	}
 
 	$this->logger->addInfo("Add Booking");
 });
 
-$app->get('/api/booking/{UserId}', function($request) {
+$app->get('/api/booking/{UserId}', function($request, $response) {
 	$this->logger->addInfo("Get Booking");
 	require_once('dbconnect.php');
 
@@ -48,12 +52,16 @@ $app->get('/api/booking/{UserId}', function($request) {
 	$result = $mysqli->query($query);
 
 	if (mysqli_num_rows($result) === 0) {
-		echo "Error: No bookings.";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'Error: No bookings.']));
+
 	}
 	else {
 		$data = $result->fetch_all(MYSQLI_ASSOC);
-		header('Content-Type: application/json');
-		echo json_encode($data);
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $data]));
 	}
 });
 

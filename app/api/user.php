@@ -2,7 +2,7 @@
 
 use \Firebase\JWT\JWT;
 
-$app->post('/api/user', function($request) {
+$app->post('/api/user', function($request, $response) {
 
 	$this->logger->addInfo("Registration");
 	require_once('dbconnect.php');
@@ -82,14 +82,18 @@ $app->post('/api/user', function($request) {
 
 	if ($errorMsg == "Error:") {
 		$stmt->execute();
-		echo "Success";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'success']));
 	}
 	else{
-		echo $errorMsg;
+ 		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $errorMsg]));
 	}
 });
 
-$app->put('/api/user/{UserId}', function($request) {
+$app->put('/api/user/{UserId}', function($request, $response) {
 
 	require_once('dbconnect.php');
 	$UserId = $request->getAttribute('UserId');
@@ -154,14 +158,18 @@ $app->put('/api/user/{UserId}', function($request) {
 
 	if ($errorMsg == "Error:") {
 		$stmt->execute();
-		echo "Success";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'success']));
 	}
 	else{
-		echo $errorMsg;
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $errorMsg]));
 	}
 });
 
-$app->get('/api/user/{UserId}', function($request){
+$app->get('/api/user/{UserId}', function($request, $response){
 	$this->logger->addInfo("User details");
 	require_once('dbconnect.php');
 	$UserId = $request->getAttribute('UserId');
@@ -177,11 +185,13 @@ $app->get('/api/user/{UserId}', function($request){
 		echo json_encode($data);
 	}
 	else {
-		echo "Error: Invalid user.";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'Error: Invalid user.']));
 	}
 });
 
-$app->post('/api/login', function($request){
+$app->post('/api/login', function($request, $response){
 	$this->logger->addInfo("Registration");
 	require_once('dbconnect.php');
 
@@ -236,15 +246,20 @@ $app->post('/api/login', function($request){
         	//echo $array["data"]["userName"];
 
 		    $unencodedArray = ['jwt' => $jwt];
-		    echo $jwt;
+		    //echo $jwt;
+		   	return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode(['token' => $jwt]));
 		}
-		else{
-			echo $UserName;
-			echo "Invalid Username/Password";
+		else{			
+			return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode(['response' => 'Invalid Username/Password']));
 		}
 	}
 	else{
-		echo $UserName;
-		echo "Invalid Username/Password.";
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => 'Invalid Username/Password']));
 	}
 });

@@ -24,7 +24,7 @@ $container["jwt"] = function ($container) {
 
 $app->add(new \Slim\Middleware\JwtAuthentication([
 	"path" => ["/api", "/admin"],
-    "passthrough" => ["/api/login", "/admin/ping"],
+    "passthrough" => ["/api/login", "/admin/ping", "/api/user"],
     "algorithm" => "HS256",
     "secret" => getenv("JWT_SECRET"),
     "callback" => function ($request, $response, $arguments) use ($container) {
