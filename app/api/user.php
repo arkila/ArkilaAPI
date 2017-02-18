@@ -181,8 +181,9 @@ $app->get('/api/user/{UserId}', function($request, $response){
 
 	if ($num_rows !== 0) {
 		$data[] = $row;
-		header('Content-Type: application/json');
-		echo json_encode($data);
+		return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(['response' => $data]));
 	}
 	else {
 		return $response->withStatus(200)
